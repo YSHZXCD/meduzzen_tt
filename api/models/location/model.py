@@ -27,9 +27,11 @@ class Location(DefaultModel):
     def remove_emp_location(cls, emp_id):
         if emp := Employee.find_by_id(emp_id):
             if emp.location:
-                Employee.table.update_one({'_id': ObjectId(emp_id)}, {'$set': {'location': None}})
-                return 'Location is clear'
-            raise ModelException('This worker got no location')
+                Employee.table.update_one(
+                    {"_id": ObjectId(emp_id)}, {"$set": {"location": None}}
+                )
+                return "Location is clear"
+            raise ModelException("This worker got no location")
 
     @classmethod
     def add_emp_on_location(cls, emp_id, location_id):
@@ -41,7 +43,10 @@ class Location(DefaultModel):
                     {"_id": ObjectId(location_id)},
                     {"$set": {"emp_on_location": ObjectId(emp_id)}},
                 )
-                Employee.table.update_one({'_id': ObjectId(emp_id)}, {'$set': {'location': ObjectId(location_id)}})
+                Employee.table.update_one(
+                    {"_id": ObjectId(emp_id)},
+                    {"$set": {"location": ObjectId(location_id)}},
+                )
                 return cls.find_by_id(location_id)
 
     @classmethod

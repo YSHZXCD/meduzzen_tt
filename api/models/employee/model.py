@@ -46,12 +46,28 @@ class Employee(DefaultModel):
             return created_employee
 
     @classmethod
+    def find_emp(cls, speciality=None, date=None):
+        if speciality is None and date is None:
+            return [i.to_json_safe() for i in cls.find({})]
+
+        if speciality:
+            return [i.to_json_safe() for i in cls.find({"speciality": speciality})]
+
+        if date:
+            return [
+                i.to_json_safe()
+                if i.to_json_safe()["schedule"]["work_time"].get(date, False)
+                else None
+                for i in cls.find({})
+            ]
+
+    @classmethod
     def delete_employee(cls, emp_id):
         if cls.find_by_id(emp_id):
             group = Group.find_one({"group_name": "employees"})
             Group.remove_user(group["_id"], emp_id)
-            cls.table.delete_one({'_id': ObjectId(emp_id)})
-            return 'Employee has been deleted'
+            cls.table.delete_one({"_id": ObjectId(emp_id)})
+            return "Employee has been deleted"
 
     @classmethod
     def from_dict(cls, _dict):
@@ -118,26 +134,24 @@ class Employee(DefaultModel):
 
 
 class Schedule:
-    def __init__(self, schedule):
-        self.schedule = schedule
+    def __init__(self, work_time):
+        self.work_time = work_time
 
     @classmethod
     def set_schedule(cls, emp_id, params):
         if Employee.find_by_id(emp_id):
-            if res_schedule := cls.is_valid(params):
+            if cls.is_valid(params):
                 Employee.table.update_one(
-                    {"_id": ObjectId(emp_id)}, {"$set": {"schedule": res_schedule}}
+                    {"_id": ObjectId(emp_id)}, {"$set": {"schedule": params}}
                 )
                 return Employee.find_by_id(emp_id)
 
     @staticmethod
     def is_valid(params):
-        res_schedule = {}
-
-        if not isinstance(params, dict):
+        if not isinstance(params["work_time"], dict):
             raise ModelException("Invalid parameters")
 
-        for i in params:
+        for i in params["work_time"]:
             try:
                 date = datetime.strptime(i, "%d.%m.%Y").date()
             except ValueError:
@@ -146,8 +160,4 @@ class Schedule:
             if date <= datetime.now().date():
                 raise ModelException("Invalid date")
 
-            res_schedule[i] = {}
-            for v in range(len(params[i])):
-                res_schedule[i].update({str(v): params[i][v]})
-
-        return res_schedule
+        return True

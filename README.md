@@ -1,18 +1,40 @@
 # Как использовать API
 
+### Технологии:
+- ```Python3``` - Programming language
+- ```MongoDB``` - Database
+- ```PyJWT``` - JWT token
+- ```Flask``` - API
+- ```Black``` - prettier
+----
+
 #### Создание админа и менеджера:
 
-```flask create-admin <admin_name> <admin_password> <admin_phone_number>```
-```flask create-manager <manager_name> <manager_password> <manager_phone_number>```
+```$ flask create-admin <admin_name> <admin_password> <admin_phone_number>```<br>
+```$ flask create-manager <manager_name> <manager_password> <manager_phone_number>```
 
 #### Авторизация админа или менеджера идет через ```/login```
 
-Поля для входа ```GET {"name": "admin", "password": "admin"}```
-После успешной авторизации, пользователь получает токен.
+#### Method GET
+```json
+{
+  "name": "admin",
+  "password": "admin"
+}
+```
+
+###### После успешной авторизации, пользователь получает токен.
+```json
+{
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdGluZyIsInBhc3N3b3JkIjoiYTY2NWE0NTkyMDQyMmY5ZDQxN2U0ODY3ZWZkYzRmYjhhMDRhMWYzZmZmMWZhMDdlOTk4ZTg2ZjdmN2EyN2FlMyJ9.hlyXKJjP-DInZwsai3FydRhYQkOUkLHaYrwEAuOjsMk"
+}
+```
+
+---
 
 # Location
 #### Method: POST
-```/location/add_location - Создание рабочей локации (может создать только менеджер)```
+```/location/add_location - Создание рабочей локации (может только менеджер)```
 #### Request to send:
 ```json
 {
@@ -30,7 +52,7 @@
 ```
 ----
 #### Method: POST
-```/location/add_emp_to_location/<worker_id>/<location_id> - Добавить работника на локацию (может создать только менеджер)```
+```/location/add_emp_to_location/<worker_id>/<location_id> - Добавить работника на локацию (может только менеджер)```
 #### Request to send:
 #### Response
 ```json
@@ -91,7 +113,10 @@
 #### Request to send:
 ```json
 {
-    "25.04.2024": ["10:30-12:30", "15:00-20:00"]
+    "work_time": {
+        "25.04.2024": ["10:00-12:00", "16:00-20:00"],
+        "24.04.2024": ["10:00-12:00", "16:00-20:00"]
+    }
 }
 ``` 
 #### Response
@@ -114,7 +139,7 @@
 ```
 ----
 #### Method GET
-```/emp/get_emp_schedule/<worker_id> - Посмотреть график работы (может только менеджетр)```
+```/emp/get_emp_schedule/<worker_id> - Посмотреть график работы (может только менеджер)```
 #### Response
 ```json
 {
@@ -168,7 +193,7 @@
 ```
 ----
 #### Method POST
-```/group/add_user/<group_id>/<user_id> - Добавить пользователя или работника в группу (может только админ)```
+```/group/add_user/<group_id>/<user_id> - Добавить пользователя или работника в группу (может только администратор)```
 #### Response
 ```json
 {
@@ -187,7 +212,7 @@
 
 # User
 #### Method POST
-```/ - Создать пользователя (может только админ)```
+```/ - Создать пользователя (может только администратор)```
 #### Request to send
 ```json
 {
@@ -222,25 +247,34 @@
 ```
 ----
 #### Method GET
-```/get_emp - Посмотреть список всех работников (могут все в открытом доступе)```
+```/get_emp - Посмотреть список всех работников (могут все в открытом доступе)```<br>
+У данного эндпоинта есть аргументы сортировки: speciality и date<br>
+```/get_emp/?speciality=hairdresser - Вывод всех парикмахеров```<br>
+```/get_emp/?date=25.03.2023 - Вывод всех сотрудников у которых есть время в данный день```
 #### Response
 ```json
 {
     "employees": [
         {
-            "_id": "639a379850bfa9f4c0fd7634",
+            "_id": "639a7eff9274a59edb3b72de",
             "appointments": [],
-            "email": "hairdresser123321@gmail.com",
+            "email": "hairdresser@gmail.com",
             "location": "None",
-            "name": "Yevhenii",
-            "phone_number": "+38098791107",
+            "name": "test1",
+            "phone_number": "12312312",
             "schedule": {
-                "25.04.2024": {
-                    "0": "10:30-12:30",
-                    "1": "15:00-20:00"
+                "work_time": {
+                    "24.04.2024": [
+                        "10:00-12:00",
+                        "16:00-20:00"
+                    ],
+                    "25.04.2024": [
+                        "10:00-12:00",
+                        "16:00-20:00"
+                    ]
                 }
             },
-            "speciality": "Hairdresser"
+            "speciality": "hairdresser"
         }
     ]
 }

@@ -32,7 +32,7 @@ class Appointment(DefaultModel):
                         )
                         return Employee.find_by_id(emp_id)
                     raise ModelException("Invalid date")
-                raise ModelException('Worker got not location')
+                raise ModelException("Worker got not location")
 
     @classmethod
     def from_dict(cls, _dict):

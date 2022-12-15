@@ -21,7 +21,13 @@ def login_user():
 
 @user.route("/get_emp", methods=["GET"])
 def get_emp():
-    return jsonify({"employees": [i.to_json_safe() for i in Employee.find({})]})
+    return jsonify(
+        {
+            "employees": Employee.find_emp(
+                request.args.get("speciality"), request.args.get("date")
+            )
+        }
+    )
 
 
 @user.route("/create_appointment/<ObjectId:emp_id>", methods=["POST"])

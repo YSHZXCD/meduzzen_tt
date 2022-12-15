@@ -57,7 +57,7 @@ class Group(DefaultModel):
     @classmethod
     def remove_group(cls, group_id):
         if cls.find_by_id(group_id):
-            cls.table.delete_one({'_id': ObjectId(group_id)})
+            cls.table.delete_one({"_id": ObjectId(group_id)})
             return "Group has been deleted"
 
     @classmethod

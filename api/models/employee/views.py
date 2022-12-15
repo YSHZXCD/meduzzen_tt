@@ -15,7 +15,7 @@ def register_employee():
 @employee.route("/remove_employee/<ObjectId:emp_id>", methods=["DELETE"])
 @access("manager")
 def remove_employee(emp_id):
-    return jsonify({'status': Employee.delete_employee(emp_id)})
+    return jsonify({"status": Employee.delete_employee(emp_id)})
 
 
 @employee.route("/set_schedule/<ObjectId:emp_id>", methods=["POST"])

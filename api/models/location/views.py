@@ -20,7 +20,7 @@ def add_emp_to_location(emp_id, location_id):
     return jsonify(Location.add_emp_on_location(emp_id, location_id).to_json_safe())
 
 
-@location.route('/remove_emp_location/<ObjectId:emp_id>', methods=['DELETE'])
-@access('manager')
+@location.route("/remove_emp_location/<ObjectId:emp_id>", methods=["DELETE"])
+@access("manager")
 def remove_location(emp_id):
-    return jsonify({'status': Location.remove_emp_location(emp_id)})
+    return jsonify({"status": Location.remove_emp_location(emp_id)})
